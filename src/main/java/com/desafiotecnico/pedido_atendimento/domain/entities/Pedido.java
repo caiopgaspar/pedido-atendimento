@@ -7,7 +7,13 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@Entity
+@Table(name = "pedidos")
 public class Pedido {
 
     @Id
