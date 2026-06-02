@@ -1,6 +1,8 @@
 package com.desafiotecnico.pedido_atendimento.dto.request;
 
 import java.util.List;
+
+import com.desafiotecnico.pedido_atendimento.domain.entities.Cliente;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,10 +17,7 @@ import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
 @AllArgsConstructor
 public class CreatePedidoRequest {
 
-    @NotBlank(message = "O ID do cliente é obrigatório")
-    private String clienteId;
-    
-    private PedidoStatusEnum status = PedidoStatusEnum.CRIADO;
+    private Cliente cliente;
 
     @NotNull(message = "O pedido deve conter itens")
     @Size(min = 1, message = "O pedido deve conter pelo menos um item")

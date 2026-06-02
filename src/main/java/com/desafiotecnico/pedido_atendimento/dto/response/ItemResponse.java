@@ -10,12 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ItemResponse {
     
-    private String produtoId;
+    private String produtoNome;
 
     private Integer quantidade;
 
     private BigDecimal precoUnitario;
-
-    private BigDecimal total; 
 
 }
