@@ -1,103 +1,105 @@
 package com.desafiotecnico.pedido_atendimento.integration.mapper;
 
+import com.desafiotecnico.pedido_atendimento.domain.entities.Produto;
+import com.desafiotecnico.pedido_atendimento.repository.ProdutoRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import com.desafiotecnico.pedido_atendimento.domain.entities.ItemPedido;
+import com.desafiotecnico.pedido_atendimento.domain.entities.Pedido;
+import com.desafiotecnico.pedido_atendimento.dto.request.CreatePedidoRequest;
+import com.desafiotecnico.pedido_atendimento.dto.request.ItemRequest;
+import com.desafiotecnico.pedido_atendimento.dto.response.PedidoResponse;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Component;
-import com.desafiotecnico.pedido_atendimento.domain.entities.Item;
-import com.desafiotecnico.pedido_atendimento.domain.entities.Pedido;
-import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
-import com.desafiotecnico.pedido_atendimento.dto.request.CreatePedidoRequest;
-import com.desafiotecnico.pedido_atendimento.dto.request.ItemRequest;
-import com.desafiotecnico.pedido_atendimento.dto.response.ItemResponse;
-import com.desafiotecnico.pedido_atendimento.dto.response.PedidoResponse;
-
-
-// TODO gerar UUID, status CRIADO, calcular total, salvar
 
 @Component
+@RequiredArgsConstructor
 public class PedidoMapper {
-    
-    public Pedido toEntity(CreatePedidoRequest request) {
+
+    private final ProdutoRepository produtoRepository;
+
+    public Pedido toPedidoEntity(CreatePedidoRequest request) {
 
         Pedido pedido = new Pedido();
-        pedido.setClienteId(request.getClienteId());
-        pedido.setStatus(PedidoStatusEnum.CRIADO);
 
-        List<Item> itens = new ArrayList<>();
-        if (request.getItens() != null) {
-            for (ItemRequest itemRequest : request.getItens()) {
-                Item item = toItemEntity(itemRequest);
-                itens.add(item);
-            }
+        pedido.setCliente(request.getCliente());
+
+        List<ItemPedido> itensPedido = toItensList(request.getItens(), pedido);
+        pedido.setItensPedido(itensPedido);
+
+        pedido.setTotal(calcularTotal(pedido));
+
+
+        return pedido;
+    }
+
+    private List<ItemPedido> toItensList (List<ItemRequest> requests, Pedido pedido) {
+        List<ItemPedido> itens = new ArrayList<>();
+        for (ItemRequest request : requests) {
+            itens.add(toItemPedidoEntity(request, pedido));
         }
-        pedido.setItens(itens);
-
-        pedido.calcularTotal();
-
-        return pedido;        
+        return itens;
     }
 
-    private Item toItemEntity(ItemRequest request) {
+    private ItemPedido toItemPedidoEntity (ItemRequest request, Pedido pedido) {
 
-        Item item = new Item();
-        item.setProdutoId(request.getProdutoId());
-        item.setQuantidade(request.getQuantidade());
-        item.setPrecoUnitario(request.getPrecoUnitario());
+        Produto produto = produtoRepository.findById(request.getProdutoId()).orElseThrow();
 
-        item.validarQuantidade();
+        ItemPedido itemPedido = new ItemPedido();
+        itemPedido.setPedido(pedido);
+        itemPedido.setProduto(produto);
+        itemPedido.setQuantidade(request.getQuantidade());
+        itemPedido.setPrecoUnitario(produto.getPrecoUnitario());
 
-        return item;
+        return itemPedido;
     }
 
+//    private ProdutoResponse toProdutoResponse (Produto produto) {
+//
+//        return ProdutoResponse.builder()
+//                .codigoProduto(produto.getCodigoProduto())
+//                .nome(produto.getNome())
+//                .descricao(produto.getDescricao())
+//                .precoUnitario(produto.getPrecoUnitario())
+//                .build();
+//    }
 
-    public PedidoResponse toResponse(Pedido pedido) {
 
-        PedidoResponse response = new PedidoResponse();
-        response.setId(pedido.getId());
-        response.setClienteId(pedido.getClienteId());
-        response.setStatus(pedido.getStatus().name());
-        response.setTotal(pedido.getTotal());
-        response.setCreatedAt(pedido.getCreatedAt());
-        response.setUpdatedAt(pedido.getUpdatedAt());
+    public PedidoResponse toPedidoResponse (Pedido pedido) {
+        return PedidoResponse.builder()
+                .pedidoCodigo(pedido.getPedidoCodigo())
+                .clienteNome(pedido.getCliente().getNome())
+//                .itens()
+                .total(pedido.getTotal())
+                .createdAt(pedido.getCreatedAt())
+                .build();
+    }
+//
+//    private ItemResponse toItemResponse(ItemPedido itemPedido) {
+//        return null;
+//    }
 
-        if (pedido.getItens() != null) {
-            /*TODO */
-            List<ItemResponse> itensResponse = pedido.getItens()
+    private BigDecimal calcularTotal( Pedido pedido) {
+
+        BigDecimal soma = BigDecimal.ZERO;
+
+        List<ItemPedido> itensPedido = pedido.getItensPedido();
+
+        for (ItemPedido itemPedido : itensPedido) {
+            BigDecimal preco = itemPedido.getPrecoUnitario();
+            int quantidade = itemPedido.getQuantidade();
+
+            BigDecimal totalItem = preco.multiply(BigDecimal.valueOf(quantidade));
+            soma = soma.add(totalItem);
         }
 
-        return response;        
+        return soma;
     }
 
-    private ItemResponse toItemResponse(Item item) {
-        
-        if (item != null) {
-            
-            ItemResponse response = new ItemResponse();
-            response.setProdutoId(item.getProdutoId());
-            response.setQuantidade(item.getQuantidade());
-            response.setPrecoUnitario(item.getPrecoUnitario());
-            
-            /*TODO: total */
-
-            return response;
-        
-        } else {
-
-            return null;
-        }
-    }
-
-
-    
-
-
-    
 
 }
-
 
     /*
 
