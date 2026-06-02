@@ -3,15 +3,19 @@ package com.desafiotecnico.pedido_atendimento.domain.entities;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;import java.util.ArrayList;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "pedidos")
 public class Pedido {
@@ -20,16 +24,18 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(nullable = false)
-    private String clienteId;
+    @Column(name = "pedidocodigo")
+    private String pedidoCodigo;
+
+    @OneToOne
+    @JoinColumn(name = "clienteId", referencedColumnName = "id")
+    private Cliente cliente;
     
     @Column(nullable = false)
-    private PedidoStatusEnum status;
+    private String status;
     
-    @ElementCollection
-    @CollectionTable(name = "pedido_itens", joinColumns = @JoinColumn(name = "pedido_id"))
-    @Column(name = "itens")
-    private List<Item> itens = new ArrayList<>();
+    @OneToMany
+    private List<ItemPedido> itensPedido;
 
     @Column
     private BigDecimal total;
@@ -40,21 +46,5 @@ public class Pedido {
     
     @LastModifiedDate
     private LocalDateTime updatedAt;
-
-    
-    public void calcularTotal() {
-
-        BigDecimal soma = BigDecimal.ZERO;
-
-        for (Item item : itens) {
-            BigDecimal preco = item.getPrecoUnitario();
-            int quantidade = item.getQuantidade();
-
-            BigDecimal totalItem = preco.multiply(BigDecimal.valueOf(quantidade));
-            soma = soma.add(totalItem);
-        }
-
-        this.total = soma;                
-    }    
 
 }
