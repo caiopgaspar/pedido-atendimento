@@ -1,6 +1,8 @@
 package com.desafiotecnico.pedido_atendimento.domain.entities;
 
 import java.math.BigDecimal;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,15 +17,20 @@ public class ItemPedido {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @NotNull
-    @OneToOne
-    @JoinColumn(name = "produtoId", referencedColumnName = "id")
-    private Produto produto;
+//    @NotNull
+//    @OneToOne
+//    @JoinColumn(name = "produtoId", referencedColumnName = "id")
+//    private Produto produto;
+
+    private String produtoId;
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "pedidoId", referencedColumnName = "id")
+    @JsonIgnore
+//    @JoinColumn(name = "pedidoId", referencedColumnName = "id")
     private Pedido pedido;
+
+//    private String pedidoId;
 
     @NotNull
     @Positive

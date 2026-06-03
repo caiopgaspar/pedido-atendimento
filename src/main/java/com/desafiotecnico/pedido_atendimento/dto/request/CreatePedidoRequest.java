@@ -17,7 +17,7 @@ import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
 @AllArgsConstructor
 public class CreatePedidoRequest {
 
-    private Cliente cliente;
+    private String clienteId;
 
     @NotNull(message = "O pedido deve conter itens")
     @Size(min = 1, message = "O pedido deve conter pelo menos um item")

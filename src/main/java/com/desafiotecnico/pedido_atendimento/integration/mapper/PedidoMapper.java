@@ -1,5 +1,6 @@
 package com.desafiotecnico.pedido_atendimento.integration.mapper;
 
+import com.desafiotecnico.pedido_atendimento.domain.entities.Cliente;
 import com.desafiotecnico.pedido_atendimento.domain.entities.Produto;
 import com.desafiotecnico.pedido_atendimento.repository.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import com.desafiotecnico.pedido_atendimento.dto.request.ItemRequest;
 import com.desafiotecnico.pedido_atendimento.dto.response.PedidoResponse;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,12 +26,15 @@ public class PedidoMapper {
 
         Pedido pedido = new Pedido();
 
-        pedido.setCliente(request.getCliente());
+        pedido.setClienteId(request.getClienteId());
 
         List<ItemPedido> itensPedido = toItensList(request.getItens(), pedido);
         pedido.setItensPedido(itensPedido);
 
         pedido.setTotal(calcularTotal(pedido));
+
+        //Setar o Created aqui ou com anotação na entidade?
+        pedido.setCreatedAt(LocalDateTime.now());
 
 
         return pedido;
@@ -45,13 +50,16 @@ public class PedidoMapper {
 
     private ItemPedido toItemPedidoEntity (ItemRequest request, Pedido pedido) {
 
-        Produto produto = produtoRepository.findById(request.getProdutoId()).orElseThrow();
+//        Produto produto = produtoRepository.findById(request.getProdutoId()).orElseThrow();
 
         ItemPedido itemPedido = new ItemPedido();
         itemPedido.setPedido(pedido);
-        itemPedido.setProduto(produto);
+//        itemPedido.setPedidoId(request.getPedidoId());
+//        itemPedido.setProduto(produto);
+        itemPedido.setProdutoId(request.getProdutoId());
         itemPedido.setQuantidade(request.getQuantidade());
-        itemPedido.setPrecoUnitario(produto.getPrecoUnitario());
+//        itemPedido.setPrecoUnitario(produto.getPrecoUnitario());
+        itemPedido.setPrecoUnitario(request.getPrecoUnitario());
 
         return itemPedido;
     }
@@ -66,12 +74,11 @@ public class PedidoMapper {
 //                .build();
 //    }
 
-
     public PedidoResponse toPedidoResponse (Pedido pedido) {
         return PedidoResponse.builder()
-                .pedidoCodigo(pedido.getPedidoCodigo())
-                .clienteNome(pedido.getCliente().getNome())
-//                .itens()
+//                .pedidoCodigo(pedido.getPedidoCodigo())
+//                .clienteNome(pedido.getCliente().getNome())
+                .itens(pedido.getItensPedido())
                 .total(pedido.getTotal())
                 .createdAt(pedido.getCreatedAt())
                 .build();

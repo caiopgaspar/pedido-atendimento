@@ -20,6 +20,8 @@ public class ItemRequest {
     @NotBlank
     private String produtoId;
 
+//    private String pedidoId;
+
     @NotNull
     @Positive
     private Integer quantidade;
