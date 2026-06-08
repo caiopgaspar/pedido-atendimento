@@ -15,10 +15,6 @@ public class PedidoController {
 
     private final PedidoService pedidoService;
 
-//    public PedidoController(PedidoService pedidoService){
-//        this.pedidoService = pedidoService;
-//    }
-
     @PostMapping
     public ResponseEntity<PedidoResponse> createPedido (@RequestBody CreatePedidoRequest request) {
 
