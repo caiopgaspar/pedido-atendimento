@@ -1,8 +1,6 @@
 package com.desafiotecnico.pedido_atendimento.dto.request;
 
 import java.math.BigDecimal;
-
-import com.desafiotecnico.pedido_atendimento.domain.entities.Produto;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
@@ -19,8 +17,6 @@ public class ItemRequest {
 
     @NotBlank
     private String produtoId;
-
-//    private String pedidoId;
 
     @NotNull
     @Positive
