@@ -11,13 +11,13 @@ public interface PedidoService {
 
     PedidoResponse createPedido(CreatePedidoRequest request);
 
-//    PedidoResponse findPedidoById(String id);
-//
-//    List<PedidoResponse> findPedidoByFilters(String clienteId, PedidoStatusEnum status);
-//
-//    PedidoResponse updatePedido(String id, UpdatePedidoRequest request);
-//
-//
-//    void deletePedido(String id);
+    PedidoResponse findPedidoById(String id);
+
+    List<PedidoResponse> findPedidoByFilters(String clienteId, PedidoStatusEnum status);
+
+    PedidoResponse updatePedido(String id, UpdatePedidoRequest request);
+
+
+    void deletePedido(String id);
 
 }

@@ -2,7 +2,7 @@ package com.desafiotecnico.pedido_atendimento.integration.mapper;
 
 import com.desafiotecnico.pedido_atendimento.domain.entities.Cliente;
 import com.desafiotecnico.pedido_atendimento.domain.entities.Produto;
-import com.desafiotecnico.pedido_atendimento.repository.ProdutoRepository;
+import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import com.desafiotecnico.pedido_atendimento.domain.entities.ItemPedido;
@@ -10,7 +10,6 @@ import com.desafiotecnico.pedido_atendimento.domain.entities.Pedido;
 import com.desafiotecnico.pedido_atendimento.dto.request.CreatePedidoRequest;
 import com.desafiotecnico.pedido_atendimento.dto.request.ItemRequest;
 import com.desafiotecnico.pedido_atendimento.dto.response.PedidoResponse;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,73 +19,70 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PedidoMapper {
 
-    private final ProdutoRepository produtoRepository;
-
-    public Pedido toPedidoEntity(CreatePedidoRequest request) {
+    public Pedido toPedidoEntity(CreatePedidoRequest request, Cliente cliente, List<Produto> produtos) {
 
         Pedido pedido = new Pedido();
+        pedido.setCliente(cliente);
 
-        pedido.setClienteId(request.getClienteId());
-
-        List<ItemPedido> itensPedido = toItensList(request.getItens(), pedido);
+        List<ItemPedido> itensPedido = toItensList(request.getItens(), pedido, produtos);
         pedido.setItensPedido(itensPedido);
 
         pedido.setTotal(calcularTotal(pedido));
 
-        //Setar o Created aqui ou com anotação na entidade?
+        pedido.setStatus(PedidoStatusEnum.CRIADO);
+
         pedido.setCreatedAt(LocalDateTime.now());
 
 
         return pedido;
     }
 
-    private List<ItemPedido> toItensList (List<ItemRequest> requests, Pedido pedido) {
+
+    private List<ItemPedido> toItensList (List<ItemRequest> requests, Pedido pedido, List<Produto> produtos) {
+
         List<ItemPedido> itens = new ArrayList<>();
-        for (ItemRequest request : requests) {
-            itens.add(toItemPedidoEntity(request, pedido));
+
+        for (int i = 0; i < requests.size(); i++) {
+            ItemRequest request = requests.get(i);
+            Produto produto = produtos.get(i);
+            itens.add(toItemPedidoEntity(request, pedido, produto));
         }
+
+
         return itens;
     }
 
-    private ItemPedido toItemPedidoEntity (ItemRequest request, Pedido pedido) {
 
-//        Produto produto = produtoRepository.findById(request.getProdutoId()).orElseThrow();
+    private ItemPedido toItemPedidoEntity (ItemRequest request, Pedido pedido, Produto produto) {
 
         ItemPedido itemPedido = new ItemPedido();
+
         itemPedido.setPedido(pedido);
-//        itemPedido.setPedidoId(request.getPedidoId());
-//        itemPedido.setProduto(produto);
-        itemPedido.setProdutoId(request.getProdutoId());
+
         itemPedido.setQuantidade(request.getQuantidade());
-//        itemPedido.setPrecoUnitario(produto.getPrecoUnitario());
-        itemPedido.setPrecoUnitario(request.getPrecoUnitario());
+
+        itemPedido.setProduto(produto);
+
+        itemPedido.setPrecoUnitario(produto.getPrecoUnitario());
+
 
         return itemPedido;
     }
 
-//    private ProdutoResponse toProdutoResponse (Produto produto) {
-//
-//        return ProdutoResponse.builder()
-//                .codigoProduto(produto.getCodigoProduto())
-//                .nome(produto.getNome())
-//                .descricao(produto.getDescricao())
-//                .precoUnitario(produto.getPrecoUnitario())
-//                .build();
-//    }
 
     public PedidoResponse toPedidoResponse (Pedido pedido) {
+
         return PedidoResponse.builder()
-//                .pedidoCodigo(pedido.getPedidoCodigo())
-//                .clienteNome(pedido.getCliente().getNome())
+                .pedidoCodigo(pedido.getPedidoCodigo())
+                .clienteNome(pedido.getCliente().getNome())
                 .itens(pedido.getItensPedido())
                 .total(pedido.getTotal())
+                .status(pedido.getStatus().toString())
                 .createdAt(pedido.getCreatedAt())
                 .build();
+
     }
-//
-//    private ItemResponse toItemResponse(ItemPedido itemPedido) {
-//        return null;
-//    }
+
 
     private BigDecimal calcularTotal( Pedido pedido) {
 
@@ -107,25 +103,3 @@ public class PedidoMapper {
 
 
 }
-
-    /*
-
-    public Pedido toEntity(CreatePedidoRequest request) {
-        Pedido pedido = new Pedido();
-        pedido.setPedidoId(pedido.getClienteId());
-        pedido.setStatus(PedidoStatusEnum.CRIADO);
-
-        List<Item> itens = new ArrayList<>();
-        for (ItemRequest ItemRequest : request.getItens()) {
-            itens.add(toItemEntity(itemRequest));
-        }
-        pedido.setItens(itens);
-
-        pedido.calcularTotal();
-
-        return pedido;
-    }
-
-    */
-
-
