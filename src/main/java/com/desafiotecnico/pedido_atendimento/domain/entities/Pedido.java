@@ -4,6 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,17 +25,16 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-//    @Column(name = "pedidocodigo")
-//    private String pedidoCodigo;
+    private String pedidoCodigo;
 
-//    @OneToOne
-//    @JoinColumn(name = "clienteId", referencedColumnName = "id")
-//    private Cliente cliente;
+    @OneToOne
+    @JoinColumn(name = "clienteId", referencedColumnName = "id")
+    private Cliente cliente;
 
-    private String clienteId;
-    
-//    @Column(nullable = false)
-//    private String status;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private PedidoStatusEnum status;
     
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itensPedido = new ArrayList<>();

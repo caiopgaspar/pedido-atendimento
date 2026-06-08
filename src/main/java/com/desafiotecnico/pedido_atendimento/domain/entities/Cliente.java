@@ -3,6 +3,7 @@ package com.desafiotecnico.pedido_atendimento.domain.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import org.hibernate.validator.constraints.br.CPF;
 
 @Data
 @Entity
@@ -16,8 +17,12 @@ public class Cliente {
     public String nome;
 
     @NotNull
+    @CPF
+    public String cpf;
+
+    @NotNull
     public String email;
 
-    public String endereco;
+    public Endereco endereco;
 
 }
