@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -25,10 +24,11 @@ public class Pedido {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @Column(name = "pedido_codigo", unique = true)
     private String pedidoCodigo;
 
-    @OneToOne
-    @JoinColumn(name = "clienteId", referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id")
     private Cliente cliente;
 
     @NotNull
@@ -39,7 +39,6 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemPedido> itensPedido = new ArrayList<>();
 
-    @Column
     private BigDecimal total;
     
     @CreatedDate

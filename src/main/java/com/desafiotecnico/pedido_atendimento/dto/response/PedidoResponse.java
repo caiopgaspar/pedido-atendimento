@@ -19,7 +19,7 @@ public class PedidoResponse {
 
     private String clienteNome;
 
-    private List<ItemPedido> itens;
+    private List<ItemPedido> itens; //TODO: alterar lógica para buscar ItemResponse
 
     private BigDecimal total;
 

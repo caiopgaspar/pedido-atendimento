@@ -1,8 +1,5 @@
 package com.desafiotecnico.pedido_atendimento.dto.request;
 
-import java.math.BigDecimal;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -22,9 +19,4 @@ public class ItemRequest {
     @Positive
     private Integer quantidade;
 
-    @NotNull
-    @DecimalMin(value = "0.01")
-    @Digits(integer = 10, fraction = 2)
-    private BigDecimal precoUnitario;
-    
 }

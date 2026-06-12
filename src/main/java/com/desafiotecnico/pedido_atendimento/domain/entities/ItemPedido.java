@@ -18,13 +18,11 @@ public class ItemPedido {
 
     @NotNull
     @OneToOne
-//    @JoinColumn(name = "produtoId", referencedColumnName = "id")
     private Produto produto;
 
     @NotNull
     @ManyToOne
     @JsonIgnore
-//    @JoinColumn(name = "pedidoId", referencedColumnName = "id")
     private Pedido pedido;
 
     @NotNull
