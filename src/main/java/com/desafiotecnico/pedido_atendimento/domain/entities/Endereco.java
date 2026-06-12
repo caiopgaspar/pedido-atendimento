@@ -18,28 +18,18 @@ public class Endereco {
     private String id;
 
     @NotNull
-    @OneToOne
-    public Cliente cliente;
-
-    @NotNull
-    @Column
     public String cep;
 
-    @NotNull
     public String logradouro;
 
     public String complemento;
 
-    @NotNull
     public String numero;
 
-    @NotNull
     public String bairro;
 
-    @NotNull
     public String cidade;
 
-    @NotNull
     public String uf;
 
 }
