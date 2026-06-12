@@ -1,7 +1,6 @@
 package com.desafiotecnico.pedido_atendimento.service;
 
 import java.util.List;
-
 import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
 import com.desafiotecnico.pedido_atendimento.dto.request.CreatePedidoRequest;
 import com.desafiotecnico.pedido_atendimento.dto.request.UpdatePedidoRequest;

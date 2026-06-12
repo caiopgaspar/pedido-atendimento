@@ -14,6 +14,7 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.UUID)
     public String id;
 
+
     public String nome;
 
     @NotNull
@@ -23,6 +24,8 @@ public class Cliente {
     @NotNull
     public String email;
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "endereco_id")
     public Endereco endereco;
 
 }
