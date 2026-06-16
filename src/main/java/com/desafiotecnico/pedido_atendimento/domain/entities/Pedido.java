@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -47,5 +48,13 @@ public class Pedido {
     
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+
+    @PrePersist
+    public void generateCodigoPedido() {
+        if (this.pedidoCodigo == null) {
+            this.pedidoCodigo = "PED-" + UUID.randomUUID().toString().substring(0, 5).toUpperCase();
+        }
+    }
 
 }
