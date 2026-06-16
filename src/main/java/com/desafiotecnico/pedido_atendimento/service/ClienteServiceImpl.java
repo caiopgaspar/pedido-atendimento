@@ -12,6 +12,9 @@ import com.desafiotecnico.pedido_atendimento.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ClienteServiceImpl implements ClienteService {
@@ -33,6 +36,17 @@ public class ClienteServiceImpl implements ClienteService {
 
 
         return clienteMapper.toClienteResponse(savedCliente);
+
+    }
+
+    @Override
+    public List<ClienteResponse> findAllClientes() {
+
+        List<Cliente> clientes = clienteRepository.findAll();
+
+        return clientes.stream()
+                .map(clienteMapper::toClienteResponse)
+                .collect(Collectors.toList());
 
     }
 
