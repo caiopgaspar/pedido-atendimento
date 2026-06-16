@@ -16,6 +16,7 @@ import com.desafiotecnico.pedido_atendimento.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,17 @@ public class PedidoServiceImpl implements PedidoService {
 
 
         return pedidoMapper.toPedidoResponse(savedPedido);
+
+    }
+
+    @Override
+    public List<PedidoResponse> findAllPedidos() {
+
+        List<Pedido> pedidos = pedidoRepository.findAll();
+
+        return pedidos.stream()
+                .map(pedidoMapper::toPedidoResponse)
+                .collect(Collectors.toList());
 
     }
 

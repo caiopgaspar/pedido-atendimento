@@ -10,6 +10,8 @@ public interface PedidoService {
 
     PedidoResponse createPedido(CreatePedidoRequest request);
 
+    List<PedidoResponse> findAllPedidos();
+
     PedidoResponse findPedidoById(String id);
 
     List<PedidoResponse> findPedidoByFilters(String clienteId, PedidoStatusEnum status);
