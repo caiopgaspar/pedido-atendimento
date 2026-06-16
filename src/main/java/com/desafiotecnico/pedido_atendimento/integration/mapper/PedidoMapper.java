@@ -3,6 +3,7 @@ package com.desafiotecnico.pedido_atendimento.integration.mapper;
 import com.desafiotecnico.pedido_atendimento.domain.entities.Cliente;
 import com.desafiotecnico.pedido_atendimento.domain.entities.Produto;
 import com.desafiotecnico.pedido_atendimento.domain.enums.PedidoStatusEnum;
+import com.desafiotecnico.pedido_atendimento.dto.response.ItemResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import com.desafiotecnico.pedido_atendimento.domain.entities.ItemPedido;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -75,12 +77,29 @@ public class PedidoMapper {
         return PedidoResponse.builder()
                 .pedidoCodigo(pedido.getPedidoCodigo())
                 .clienteNome(pedido.getCliente().getNome())
-                .itens(pedido.getItensPedido())
+                .itens(toItemResponseList(pedido.getItensPedido()))
                 .total(pedido.getTotal())
                 .status(pedido.getStatus().toString())
                 .createdAt(pedido.getCreatedAt())
                 .build();
 
+    }
+
+    public ItemResponse toItemResponse (ItemPedido item) {
+
+        return ItemResponse.builder()
+                .produtoNome(item.getProduto().getNome())
+                .quantidade(item.getQuantidade())
+                .precoUnitario(item.getPrecoUnitario())
+                .build();
+
+    }
+
+    public List<ItemResponse> toItemResponseList (List<ItemPedido> itens) {
+
+        return itens.stream()
+                .map(this::toItemResponse)
+                .collect(Collectors.toList());
     }
 
 
